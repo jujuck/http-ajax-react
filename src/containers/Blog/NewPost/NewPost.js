@@ -1,29 +1,44 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import './NewPost.css';
+import { Redirect } from 'react-router-dom';
 
 class NewPost extends Component {
     state = {
         title: '',
         content: '',
-        author: 'Max'
+        author: 'Max',
+        submitted : false
+    }
+
+    componentDidMount () {
+        //if unauth => this.props.history.replace('/posts)
+        console.log(this.props)
     }
 
     postHandler = () => {
         const data = {
             title: this.state.title,
             body: this.state.body,
-            authos: this.state.author
+            author: this.state.author
         }
-        axios.post('https://jsonplaceholder.typicode.com/posts', data)
+        axios.post('posts', data)
             .then(response => {
                 console.log(response)
+                this.props.history.push('/posts');
+                //this.setState({submitted : true})
             });
     }
 
     render () {
+        let redirect = null;
+        if (this.state.submitted) {
+            redirect =  <Redirect to='/posts' />
+        }
+
         return (
             <div className="NewPost">
+               { redirect }
                 <h1>Add a Post</h1>
                 <label>Title</label>
                 <input type="text" value={this.state.title} onChange={(event) => this.setState({title: event.target.value})} />
